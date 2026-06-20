@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://evansvite:evansvite@db:5432/evansvite
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - NODE_ENV=production
+      - PORT=3000
+      - INSTANCE_URL=${INSTANCE_URL:-http://localhost:3000}
+      - INSTANCE_NAME=${INSTANCE_NAME:-evansVite}
+      - INSTANCE_DESCRIPTION=${INSTANCE_DESCRIPTION:-A federated event platform}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=evansvite
+      - POSTGRES_PASSWORD=evansvite
+      - POSTGRES_DB=evansvite
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U evansvite"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pgdata:
