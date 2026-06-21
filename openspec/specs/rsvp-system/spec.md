@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+Defines how authenticated users RSVP to events (yes/no/maybe), how RSVPs are updated and counted, and how attendee lists are displayed.
+
+## Requirements
 
 ### Requirement: RSVP to event
 The system SHALL allow any authenticated user to RSVP to an event with a status of "yes", "no", or "maybe".

@@ -15,5 +15,5 @@
 
 ## 3. Documentation
 
-- [ ] 3.1 Document the self-hosted asset convention in project docs (all static assets go under `/static/*`, served from a route handler)
-- [ ] 3.2 Add a note to the README about the no-CDN policy
+- [x] 3.1 Document the self-hosted asset convention in project docs (all static assets go under `/static/*`, served from a route handler)
+- [x] 3.2 Add a note to the README about the no-CDN policy

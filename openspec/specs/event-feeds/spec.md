@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+Defines the public event feeds (local and federated), their pagination, and event search.
+
+## Requirements
 
 ### Requirement: Local events feed
 The system SHALL display a paginated feed of all public local events.

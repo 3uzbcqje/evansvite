@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type Context, type Next } from "hono";
 import { eq } from "drizzle-orm";
 import { db, schema } from "../../db/index.js";
 import { authMiddleware, AuthContext } from "../../middleware/auth.js";
@@ -8,7 +8,7 @@ type Variables = { user: AuthContext };
 const admin = new Hono<{ Variables: Variables }>();
 admin.use("*", authMiddleware);
 
-async function requireAdmin(c: any, next: any) {
+async function requireAdmin(c: Context<{ Variables: Variables }>, next: Next) {
   const { userId } = c.var.user as AuthContext;
   const [user] = await db.select().from(schema.users).where(eq(schema.users.id, userId)).limit(1);
   if (!user?.isAdmin) return c.json({ error: "Admin access required" }, 403);
@@ -26,6 +26,7 @@ admin.get("/config", requireAdmin, async (c) => {
 
 admin.put("/config/:key", requireAdmin, async (c) => {
   const key = c.req.param("key");
+  if (!key) return c.json({ error: "Missing config key" }, 400);
   const body = await c.req.json();
   const existing = await db.select()
     .from(schema.instanceConfig)

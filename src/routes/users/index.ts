@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { eq, desc } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db, schema } from "../../db/index.js";
 import { authMiddleware, AuthContext } from "../../middleware/auth.js";
 

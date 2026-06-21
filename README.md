@@ -65,6 +65,21 @@ Seed data (optional):
 docker compose exec app npm run db:seed
 ```
 
+## Self-Hosted Assets
+
+This project **does not load any external assets from CDNs**. All static assets (JavaScript, CSS, etc.) are served from the application server via `/static/*` route handlers defined in `src/index.ts`. Files are read from `node_modules` at startup — no disk I/O on requests.
+
+To add a new self-hosted asset:
+
+1. Install the package (e.g., `npm install some-lib`)
+2. Add a route handler in `src/index.ts` that reads the file at module scope:
+   ```ts
+   import { readFileSync } from "node:fs";
+   const asset = readFileSync("node_modules/some-lib/dist/file.min.js", "utf-8");
+   app.get("/static/file.min.js", (c) => c.body(asset, 200, { "Content-Type": "application/javascript" }));
+   ```
+3. Reference the local path in templates (e.g., `<script src="/static/file.min.js">`)
+
 ## Environment Variables
 
 | Variable | Default | Description |

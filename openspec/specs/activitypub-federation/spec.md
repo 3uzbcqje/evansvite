@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+Defines ActivityPub federation: actor discovery, inbox/outbox handling, follow relationships, and delivery of events across the fediverse.
+
+## Requirements
 
 ### Requirement: Actor discovery via WebFinger
 The system SHALL implement WebFinger so that users and instances can be discovered across the fediverse.

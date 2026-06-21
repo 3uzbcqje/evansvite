@@ -18,6 +18,17 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// Server-side session records, enabling token revocation. A signed JWT carries
+// the session id; deleting the row invalidates that token immediately.
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+}, (table) => [
+  index("sessions_user_idx").on(table.userId),
+]);
+
 export const events = pgTable("events", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),

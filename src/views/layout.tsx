@@ -1,16 +1,7 @@
-import { html, raw } from "hono/html";
-import { escapeHtml } from "../lib/escape.js";
+import { raw } from "hono/html";
+import type { Child } from "hono/jsx";
 
-export function Layout(props: { title: string; children: any }) {
-  return html`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escapeHtml(props.title)} - evansVite</title>
-<script src="/static/htmx.min.js"></script>
-<style>
+const STYLES = `
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; color: #333; }
 nav { background: #fff; border-bottom: 1px solid #ddd; padding: 1rem 2rem; display: flex; gap: 1.5rem; align-items: center; }
@@ -46,19 +37,43 @@ textarea { min-height: 100px; resize: vertical; }
 .alert { padding: .8rem; border-radius: 6px; margin-bottom: 1rem; }
 .alert-error { background: #fee2e2; color: #991b1b; }
 .alert-success { background: #dcfce7; color: #166534; }
-</style>
-</head>
-<body>
-<nav>
-<a href="/" class="brand">evansVite</a>
-<a href="/events/local">Local Events</a>
-<a href="/events/federated">Federated</a>
-<a href="/events/search">Search</a>
-<a href="/login" id="auth-link">Login</a>
-</nav>
-<div class="container">
-${raw(props.children)}
-</div>
-</body>
-</html>`;
+`;
+
+export function Layout(props: {
+  title: string;
+  children: Child;
+  user?: { userId: number; email: string } | null;
+}) {
+  return (
+    <>
+      {raw("<!DOCTYPE html>")}
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>{props.title} - evansVite</title>
+          <script src="/static/htmx.min.js"></script>
+          <style>{raw(STYLES)}</style>
+        </head>
+        <body>
+          <nav>
+            <a href="/" class="brand">evansVite</a>
+            <a href="/events/local">Local Events</a>
+            <a href="/events/federated">Federated</a>
+            <a href="/events/search">Search</a>
+            {props.user ? (
+              <>
+                <a href="/events/new">New Event</a>
+                <a href={`/profile/${props.user.userId}`} style="font-weight:600">{props.user.email}</a>
+                <a href="/api/auth/logout" id="logout-link">Logout</a>
+              </>
+            ) : (
+              <a href="/login" id="auth-link">Login</a>
+            )}
+          </nav>
+          <div class="container">{props.children}</div>
+        </body>
+      </html>
+    </>
+  );
 }

@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+Defines instance administration: instance configuration, invite-code management, and federation moderation.
+
+## Requirements
 
 ### Requirement: Instance configuration
 The system SHALL allow the instance administrator to configure instance name, description, and icon/logo.

@@ -4,6 +4,11 @@ import { eq } from "drizzle-orm";
 
 const INSTANCE_URL = () => process.env.INSTANCE_URL || "http://localhost:3000";
 
+// JSON-LD actor/activity documents are dynamically shaped at the federation
+// boundary, so members are intentionally untyped here.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type JsonLd = Record<string, any>;
+
 interface SignatureParts {
   keyId: string;
   algorithm: string;
@@ -38,7 +43,7 @@ function buildSignedString(headers: string[], incomingHeaders: Record<string, st
 
 export async function verifyHttpSignature(
   incomingHeaders: Record<string, string>,
-  body: string,
+  _body: string,
 ): Promise<{ verified: boolean; actorId?: string }> {
   const sigHeader = incomingHeaders["signature"];
   if (!sigHeader) return { verified: false };
@@ -52,7 +57,7 @@ export async function verifyHttpSignature(
     "(request-target)": `post ${incomingHeaders["path"] || "/activitypub/inbox"}`,
   });
 
-  let actorDoc: any;
+  let actorDoc: JsonLd | null;
   try {
     const response = await fetch(parsed.keyId, {
       headers: { Accept: "application/activity+json" },
@@ -75,7 +80,7 @@ export async function verifyHttpSignature(
   }
 }
 
-export async function fetchRemoteActor(actorUrl: string): Promise<any> {
+export async function fetchRemoteActor(actorUrl: string): Promise<JsonLd | null> {
   try {
     const response = await fetch(actorUrl, {
       headers: { Accept: "application/activity+json" },
@@ -88,7 +93,7 @@ export async function fetchRemoteActor(actorUrl: string): Promise<any> {
   }
 }
 
-export async function fetchRemoteObject(objectUrl: string): Promise<any> {
+export async function fetchRemoteObject(objectUrl: string): Promise<JsonLd | null> {
   try {
     const response = await fetch(objectUrl, {
       headers: { Accept: "application/activity+json" },

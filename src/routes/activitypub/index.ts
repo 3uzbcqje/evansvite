@@ -85,7 +85,7 @@ activitypub.post("/activitypub/inbox", async (c) => {
   }
   incomingHeaders["path"] = "/activitypub/inbox";
 
-  const { verified, actorId } = await verifyHttpSignature(incomingHeaders, JSON.stringify(body));
+  const { verified } = await verifyHttpSignature(incomingHeaders, JSON.stringify(body));
   if (!verified) {
     return c.json({ error: "HTTP Signature verification failed" }, 401);
   }
