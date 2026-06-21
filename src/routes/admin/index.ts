@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { eq } from "drizzle-orm";
-import { db, schema } from "../../db/index";
-import { authMiddleware, AuthContext } from "../../middleware/auth";
+import { db, schema } from "../../db/index.js";
+import { authMiddleware, AuthContext } from "../../middleware/auth.js";
 import crypto from "crypto";
 
 type Variables = { user: AuthContext };

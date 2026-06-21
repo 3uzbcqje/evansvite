@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { eq, desc } from "drizzle-orm";
-import { db, schema } from "../../db/index";
-import { verifyHttpSignature, sendActivity, fetchRemoteActor } from "../../lib/activitypub";
+import { db, schema } from "../../db/index.js";
+import { verifyHttpSignature, sendActivity, fetchRemoteActor } from "../../lib/activitypub.js";
 
 const activitypub = new Hono();
 

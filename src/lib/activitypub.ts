@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { db, schema } from "../db/index";
+import { db, schema } from "../db/index.js";
 import { eq } from "drizzle-orm";
 
 const INSTANCE_URL = () => process.env.INSTANCE_URL || "http://localhost:3000";

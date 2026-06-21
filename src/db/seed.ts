@@ -1,5 +1,5 @@
-import { db, schema } from "./index";
-import { hashPassword } from "../lib/password";
+import { db, schema } from "./index.js";
+import { hashPassword } from "../lib/password.js";
 
 async function seed() {
   console.log("Seeding database...");

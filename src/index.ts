@@ -2,14 +2,15 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
+import { serve } from "@hono/node-server";
 
-import authRoutes from "./routes/auth/index";
-import eventsRoutes from "./routes/events/index";
-import rsvpRoutes from "./routes/events/rsvp";
-import activitypubRoutes from "./routes/activitypub/index";
-import adminRoutes from "./routes/admin/index";
-import usersRoutes from "./routes/users/index";
-import pagesRoutes from "./routes/pages";
+import authRoutes from "./routes/auth/index.js";
+import eventsRoutes from "./routes/events/index.js";
+import rsvpRoutes from "./routes/events/rsvp.js";
+import activitypubRoutes from "./routes/activitypub/index.js";
+import adminRoutes from "./routes/admin/index.js";
+import usersRoutes from "./routes/users/index.js";
+import pagesRoutes from "./routes/pages.js";
 
 type Variables = {
   user: { userId: number; email: string };
@@ -36,10 +37,12 @@ app.route("/", pagesRoutes);
 
 const port = Number(process.env.PORT) || 3000;
 
+serve(
+  { fetch: app.fetch, port },
+  (info) => console.log(`evansVite running on http://localhost:${info.port}`),
+);
+
 export default {
   port,
   fetch: app.fetch,
-  start() {
-    console.log(`evansVite running on http://localhost:${port}`);
-  },
 };

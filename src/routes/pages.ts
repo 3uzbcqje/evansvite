@@ -1,8 +1,8 @@
 import { Hono } from "hono";
-import { Layout } from "../views/layout";
-import { db, schema } from "../db";
+import { Layout } from "../views/layout.js";
+import { db, schema } from "../db/index.js";
 import { eq, desc, and, sql, lt } from "drizzle-orm";
-import { escapeHtml } from "../lib/escape";
+import { escapeHtml } from "../lib/escape.js";
 
 const pages = new Hono();
 

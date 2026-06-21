@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { db, schema } from "../../db/index";
-import { hashPassword, verifyPassword } from "../../lib/password";
-import { signToken } from "../../lib/jwt";
-import { authMiddleware, AuthContext } from "../../middleware/auth";
+import { db, schema } from "../../db/index.js";
+import { hashPassword, verifyPassword } from "../../lib/password.js";
+import { signToken } from "../../lib/jwt.js";
+import { authMiddleware, AuthContext } from "../../middleware/auth.js";
 
 type Variables = { user: AuthContext };
 const auth = new Hono<{ Variables: Variables }>();

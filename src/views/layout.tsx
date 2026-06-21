@@ -1,5 +1,5 @@
 import { html } from "hono/html";
-import { escapeHtml } from "../lib/escape";
+import { escapeHtml } from "../lib/escape.js";
 
 export function Layout(props: { title: string; children: any }) {
   return html`

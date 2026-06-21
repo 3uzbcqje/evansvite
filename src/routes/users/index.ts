@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { eq, desc } from "drizzle-orm";
-import { db, schema } from "../../db/index";
-import { authMiddleware, AuthContext } from "../../middleware/auth";
+import { db, schema } from "../../db/index.js";
+import { authMiddleware, AuthContext } from "../../middleware/auth.js";
 
 type Variables = { user: AuthContext };
 const users = new Hono<{ Variables: Variables }>();

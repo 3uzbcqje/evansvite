@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { eq, and, desc, sql, lt } from "drizzle-orm";
-import { db, schema } from "../../db/index";
-import { authMiddleware, AuthContext } from "../../middleware/auth";
-import { federateEvent } from "../../lib/activitypub";
+import { db, schema } from "../../db/index.js";
+import { authMiddleware, AuthContext } from "../../middleware/auth.js";
+import { federateEvent } from "../../lib/activitypub.js";
 
 type Variables = { user: AuthContext };
 const events = new Hono<{ Variables: Variables }>();
