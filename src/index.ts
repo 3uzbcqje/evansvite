@@ -1,8 +1,12 @@
+import "dotenv/config";
+import { readFileSync } from "node:fs";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
 import { serve } from "@hono/node-server";
+
+const htmxJs = readFileSync("node_modules/htmx.org/dist/htmx.min.js", "utf-8");
 
 import authRoutes from "./routes/auth/index.js";
 import eventsRoutes from "./routes/events/index.js";
@@ -26,6 +30,7 @@ app.use("*", cors({
 }));
 
 app.get("/api/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
+app.get("/static/htmx.min.js", (c) => c.body(htmxJs, 200, { "Content-Type": "application/javascript" }));
 
 app.route("/api/auth", authRoutes);
 app.route("/api/events", eventsRoutes);

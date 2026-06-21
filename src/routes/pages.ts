@@ -61,7 +61,7 @@ pages.get("/login", (c) => {
       children: `
 <div class="card" style="max-width:400px;margin:0 auto">
   <h2 style="margin-bottom:1rem">Login</h2>
-  <form hx-post="/api/auth/login" hx-target="#result">
+  <form hx-post="/api/auth/login" hx-target="#result" action="/api/auth/login" method="POST">
     <div class="form-group">
       <label>Email</label>
       <input type="email" name="email" required>
@@ -89,7 +89,7 @@ pages.get("/register", (c) => {
       children: `
 <div class="card" style="max-width:400px;margin:0 auto">
   <h2 style="margin-bottom:1rem">Register</h2>
-  <form hx-post="/api/auth/register" hx-target="#result">
+  <form hx-post="/api/auth/register" hx-target="#result" action="/api/auth/register" method="POST">
     <div class="form-group">
       <label>Email</label>
       <input type="email" name="email" required>
@@ -348,6 +348,7 @@ ${userEvents.length === 0 ? '<p style="color:#999">No events yet.</p>' : userEve
   </div>
 </div>
 `).join('')}
+<p style="margin-top:2rem;text-align:center;font-size:.9rem"><a href="/account/delete" style="color:#e63946">Delete Account</a></p>
       `,
     }),
   );
@@ -472,6 +473,34 @@ pages.get("/about", (c) => {
   <p style="margin:1rem 0;color:#555">${process.env.INSTANCE_DESCRIPTION || "A federated event platform."}</p>
   <p style="color:#777">This instance runs <strong>evansVite</strong> — free, open-source event management with ActivityPub federation.</p>
   <p style="margin-top:1rem"><a href="https://github.com" target="_blank">GitHub</a> — Report issues, contribute, or self-host your own instance.</p>
+</div>
+      `,
+    }),
+  );
+});
+
+pages.get("/account/delete", async (c) => {
+  return c.html(
+    Layout({
+      title: "Delete Account",
+      children: `
+<div class="card" style="max-width:500px;margin:0 auto">
+  <h2 style="margin-bottom:1rem;color:#e63946">Delete Account</h2>
+  <div class="alert alert-error">
+    <strong>Warning:</strong> This action is permanent and cannot be undone.
+    All of your events, RSVPs, and personal data will be deleted.
+  </div>
+  <form hx-delete="/api/auth/account" hx-target="#result">
+    <div class="form-group">
+      <label>Enter your password to confirm:</label>
+      <input type="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-danger" style="width:100%">Permanently Delete My Account</button>
+  </form>
+  <div id="result" style="margin-top:1rem"></div>
+  <p style="margin-top:1rem;text-align:center;font-size:.9rem">
+    <a href="/">Cancel and go home</a>
+  </p>
 </div>
       `,
     }),

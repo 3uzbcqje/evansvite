@@ -1,4 +1,4 @@
-import { html } from "hono/html";
+import { html, raw } from "hono/html";
 import { escapeHtml } from "../lib/escape.js";
 
 export function Layout(props: { title: string; children: any }) {
@@ -9,7 +9,7 @@ export function Layout(props: { title: string; children: any }) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escapeHtml(props.title)} - evansVite</title>
-<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+<script src="/static/htmx.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; color: #333; }
@@ -57,7 +57,7 @@ textarea { min-height: 100px; resize: vertical; }
 <a href="/login" id="auth-link">Login</a>
 </nav>
 <div class="container">
-${props.children}
+${raw(props.children)}
 </div>
 </body>
 </html>`;

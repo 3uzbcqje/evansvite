@@ -21,7 +21,7 @@ const loginSchema = z.object({
 });
 
 auth.post("/register", async (c) => {
-  const body = await c.req.json();
+  const body = await c.req.parseBody();
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) {
     return c.json({ error: "Validation failed", details: parsed.error.flatten() }, 400);
@@ -43,11 +43,16 @@ auth.post("/register", async (c) => {
   }).returning();
 
   const token = signToken({ userId: user.id, email: user.email });
+  if (c.req.header("HX-Request")) {
+    return c.json({ user: { id: user.id, email: user.email, displayName: user.displayName }, token }, 201, {
+      "HX-Redirect": "/login",
+    });
+  }
   return c.json({ user: { id: user.id, email: user.email, displayName: user.displayName }, token }, 201);
 });
 
 auth.post("/login", async (c) => {
-  const body = await c.req.json();
+  const body = await c.req.parseBody();
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
     return c.json({ error: "Validation failed" }, 400);
@@ -60,6 +65,11 @@ auth.post("/login", async (c) => {
   }
 
   const token = signToken({ userId: user.id, email: user.email });
+  if (c.req.header("HX-Request")) {
+    return c.json({ user: { id: user.id, email: user.email, displayName: user.displayName }, token }, 200, {
+      "HX-Redirect": "/",
+    });
+  }
   return c.json({ user: { id: user.id, email: user.email, displayName: user.displayName }, token });
 });
 
@@ -72,6 +82,35 @@ auth.get("/me", authMiddleware, async (c) => {
   const [user] = await db.select().from(schema.users).where(eq(schema.users.id, userId)).limit(1);
   if (!user) return c.json({ error: "User not found" }, 404);
   return c.json({ user });
+});
+
+auth.delete("/account", authMiddleware, async (c) => {
+  const { userId } = c.var.user;
+  const body = await c.req.parseBody();
+  const password = body.password as string;
+  if (!password) {
+    return c.json({ error: "Password is required" }, 400);
+  }
+
+  const [user] = await db.select().from(schema.users).where(eq(schema.users.id, userId)).limit(1);
+  if (!user) return c.json({ error: "User not found" }, 404);
+
+  if (!(await verifyPassword(password, user.passwordHash))) {
+    return c.json({ error: "Invalid password" }, 401);
+  }
+
+  await db.delete(schema.rsvps).where(eq(schema.rsvps.userId, userId));
+  await db.delete(schema.events).where(eq(schema.events.organizerId, userId));
+  await db.update(schema.inviteCodes).set({ usedBy: null }).where(eq(schema.inviteCodes.usedBy, userId));
+  await db.delete(schema.inviteCodes).where(eq(schema.inviteCodes.createdBy, userId));
+  await db.delete(schema.users).where(eq(schema.users.id, userId));
+
+  if (c.req.header("HX-Request")) {
+    return c.json({ message: "Account deleted" }, 200, {
+      "HX-Redirect": "/",
+    });
+  }
+  return c.json({ message: "Account deleted" }, 200);
 });
 
 export default auth;

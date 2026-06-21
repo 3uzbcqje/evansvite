@@ -1,4 +1,5 @@
 import { Context, Next } from "hono";
+import { verifyToken } from "../lib/jwt.js";
 
 export interface AuthContext {
   userId: number;
@@ -13,7 +14,6 @@ export async function authMiddleware(c: Context<{ Variables: { user: AuthContext
     return c.json({ error: "Authentication required" }, 401);
   }
   try {
-    const { verifyToken } = await import("../lib/jwt");
     const payload = verifyToken(token);
     c.set("user", { userId: payload.userId, email: payload.email });
     await next();
@@ -28,7 +28,6 @@ export async function optionalAuthMiddleware(c: Context<{ Variables: { user: Aut
 
   if (token) {
     try {
-      const { verifyToken } = await import("../lib/jwt");
       const payload = verifyToken(token);
       c.set("user", { userId: payload.userId, email: payload.email });
     } catch {
