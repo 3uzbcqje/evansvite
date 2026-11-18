@@ -24,7 +24,7 @@
     "self-hosted"
   ],
   "author": "",
-  "license": "AGPL-3.0",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@hono/node-server": "^2.0.5",
     "bcryptjs": "^2.4.3",
